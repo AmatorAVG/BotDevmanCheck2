@@ -15,6 +15,7 @@ env = Env()
 env.read_env()
 
 bot = telegram.Bot(token=env('TELEGRAM_ACCESS_TOKEN'))
+chat_id = env('TELEGRAM_CHAT_ID')
 logger.debug(bot.get_me())
 
 url = 'https://dvmn.org/api/long_polling/'
@@ -28,7 +29,7 @@ while True:
     try:
         params = {"timestamp": timestamp_to_request}
 
-        response = requests.get(url, headers=headers, timeout=5, params=params)
+        response = requests.get(url, headers=headers, timeout=30, params=params)
         response.raise_for_status()
 
         pprint.pprint(response.json())
@@ -41,17 +42,9 @@ while True:
             timestamp_to_request = parsed_response['last_attempt_timestamp']
             logger.debug(f"timestamp_to_request: {timestamp_to_request}")
 
-            # {'last_attempt_timestamp': 1640860287.560001,
-            #  'new_attempts': [{'is_negative': True,
-            #                    'lesson_title': 'Деплой по-взрослому',
-            #                    'lesson_url': 'https://dvmn.org/modules/django/lesson/deploy-hard-way/',
-            #                    'submitted_at': '2021-12-30T13:31:27.560001+03:00',
-            #                    'timestamp': 1640860287.560001}],
-            #  'request_query': [['timestamp', '1640860278.832847']],
-            #  'status': 'found'}
             for attempt in parsed_response['new_attempts']:
                 result = 'К сожалению, в работе нашлись ошибки.' if attempt['is_negative'] else 'Преподавателю всё понравилось, можно приступать к следующему уроку!'
-                bot.send_message(chat_id=582843947,
+                bot.send_message(chat_id=chat_id,
                                  text=f"""У вас проверили работу \"<a href="{attempt['lesson_url']}">{attempt['lesson_title']}</a>\".\n\n{result}""",
                                  parse_mode=telegram.ParseMode.HTML)
 
