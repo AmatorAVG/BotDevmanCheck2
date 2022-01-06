@@ -1,5 +1,4 @@
 import requests
-import pprint
 import time
 from environs import Env
 import logging
@@ -33,8 +32,6 @@ def main():
 
             response = requests.get(url, headers=headers, timeout=30, params=params)
             response.raise_for_status()
-
-            pprint.pprint(response.json())
 
             parsed_response = response.json()
             if parsed_response['status'] == "timeout":
