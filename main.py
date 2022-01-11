@@ -6,6 +6,9 @@ import logging
 import telegram
 
 logger = logging.getLogger(__file__)
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger.setLevel(logging.DEBUG)
 
 
 def main():
@@ -60,8 +63,4 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    logger.setLevel(logging.DEBUG)
-
     main()
