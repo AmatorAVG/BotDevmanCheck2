@@ -6,12 +6,12 @@ import logging
 import telegram
 
 logger = logging.getLogger(__file__)
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger.setLevel(logging.DEBUG)
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logger.setLevel(logging.DEBUG)
 
     env = Env()
     env.read_env()
