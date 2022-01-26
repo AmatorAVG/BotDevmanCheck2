@@ -28,13 +28,16 @@ def main():
     env = Env()
     env.read_env()
 
-    bot = telegram.Bot(token=env('TELEGRAM_ACCESS_TOKEN'))
+    bot_logger = telegram.Bot(token=env('TELEGRAM_ACCESS_TOKEN'))
     chat_id = env('TELEGRAM_CHAT_ID')
 
-    logger.addHandler(TelegramLogsHandler(bot, chat_id))
+    logger.addHandler(TelegramLogsHandler(bot_logger, chat_id))
 
     while True:
         try:
+            bot = telegram.Bot(token=env('TELEGRAM_ACCESS_TOKEN'))
+            chat_id = env('TELEGRAM_CHAT_ID')
+
             logger.debug(bot.get_me())
             logger.warning("Бот запущен")
 
@@ -48,7 +51,7 @@ def main():
                 try:
                     params = {"timestamp": timestamp_to_request}
 
-                    response = requests.get(url, headers=headers, timeout=30, params=params)
+                    response = requests.get(url, headers=headers, timeout=90, params=params)
                     response.raise_for_status()
 
                     work_checks = response.json()
@@ -73,7 +76,7 @@ def main():
                                              parse_mode=telegram.ParseMode.HTML)
 
                 except requests.exceptions.ReadTimeout:
-                    logger.warning("Превышено время ожидания. Отправляем запрос заново...")
+                    logger.info("Превышено время ожидания. Отправляем запрос заново...")
                 except requests.exceptions.ConnectionError:
                     logger.warning("Интернет отключится! Отправляем запрос заново через 5 секунд...")
                     time.sleep(5)
