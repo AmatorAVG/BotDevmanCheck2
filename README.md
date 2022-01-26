@@ -39,6 +39,19 @@ Start the script:
 ```sh
 python main.py
 ```
+
+### How to deploy
+
+Register on [Heroku site](https://id.heroku.com/login) and create an app.
+
+Link your GitHub account to Heroku and press Deploy Branch on the Deploy tab.
+
+Create Procfile and enable it on the Resources tab:
+```sh
+bot python3 main.py
+```
+Fill in the Config Vars previously specified in the .env file in the Settings tab.
+
 ### Project Goals
 
 The code is written for educational purposes on online-course for web-developers [dvmn.org](https://dvmn.org/).
