@@ -8,17 +8,33 @@ import telegram
 logger = logging.getLogger(__file__)
 
 
+class TelegramLogsHandler(logging.Handler):
+
+    def __init__(self, tg_bot, chat_id):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = tg_bot
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+
 def main():
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.WARNING,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.WARNING)
 
     env = Env()
     env.read_env()
 
     bot = telegram.Bot(token=env('TELEGRAM_ACCESS_TOKEN'))
     chat_id = env('TELEGRAM_CHAT_ID')
+
+    logger.addHandler(TelegramLogsHandler(bot, chat_id))
+
     logger.debug(bot.get_me())
+    logger.warning("Бот запущен")
 
     url = 'https://dvmn.org/api/long_polling/'
     headers = {
@@ -56,9 +72,9 @@ def main():
                                      parse_mode=telegram.ParseMode.HTML)
 
         except requests.exceptions.ReadTimeout:
-            logger.info("Превышено время ожидания. Отправляем запрос заново...")
+            logger.warning("Превышено время ожидания. Отправляем запрос заново...")
         except requests.exceptions.ConnectionError:
-            logger.info("Интернет отключится! Отправляем запрос заново через 5 секунд...")
+            logger.warning("Интернет отключится! Отправляем запрос заново через 5 секунд...")
             time.sleep(5)
 
 
