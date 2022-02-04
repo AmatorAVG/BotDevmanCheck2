@@ -52,6 +52,12 @@ bot python3 main.py
 ```
 Fill in the Config Vars previously specified in the .env file in the Settings tab.
 
+### How to run locally with Docker
+
+In the directory with your `.env` file:
+
+```docker run --env-file ./.env -d --name bot_cont amatoravg/bot-devman-check```
+
 ### Project Goals
 
 The code is written for educational purposes on online-course for web-developers [dvmn.org](https://dvmn.org/).
