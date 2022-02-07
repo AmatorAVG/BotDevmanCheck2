@@ -1,14 +1,8 @@
-FROM python:3.10 AS builder
-COPY requirements.txt .
+FROM python:alpine
+WORKDIR /app
 
-RUN pip install --user -r requirements.txt
+COPY . .
 
-FROM python:3.10-slim
-WORKDIR /
+RUN pip install -r requirements.txt
 
-COPY --from=builder /root/.local /root/.local
-COPY main.py /main.py
-
-ENV PATH=/root/.local:$PATH
-
-CMD [ "python", "./main.py" ]
+CMD [ "python", "main.py" ]
